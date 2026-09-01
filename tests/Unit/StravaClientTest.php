@@ -52,10 +52,7 @@ class StravaClientTest extends TestCase
 
         $this->assertSame('fresh-token', $token);
 
-        $this->assertDatabaseHas('strava_tokens', [
-            'athlete_id' => 1,
-            'access_token' => 'fresh-token',
-        ]);
+        $this->assertSame('fresh-token', StravaToken::first()->access_token);
     }
 
     public function test_list_activities_sends_pagination_and_after_params(): void

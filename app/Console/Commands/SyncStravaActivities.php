@@ -8,12 +8,7 @@ use App\Services\StravaClient;
 use Illuminate\Console\Command;
 
 /**
- * Historical backfill / catch-up sync.
- *
- * The webhook keeps things current once it's set up, but this command is
- * what you run first to pull your existing Strava history, and it's a
- * useful safety net to re-run periodically in case a webhook event is
- * ever missed.
+ * haalt hele stravahistoriek op en slaat op via activitysyncer
  *
  *   php artisan strava:sync                 # full history
  *   php artisan strava:sync --after=2026-01-01
