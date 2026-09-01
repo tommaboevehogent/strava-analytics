@@ -21,7 +21,7 @@ class CoachClient
             'anthropic-version' => '2023-06-01',
             'content-type' => 'application/json',
         ])->post(self::API_URL, [
-            'model' => config('services.anthropic.model', 'claude-3-5-sonnet-latest'),
+            'model' => config('services.anthropic.model', 'claude-sonnet-4-6'),
             'max_tokens' => 400,
             'messages' => [
                 ['role' => 'user', 'content' => $this->buildPrompt($features)],
@@ -49,8 +49,9 @@ class CoachClient
               t.o.v. vier weken geleden. Positief is beter (conditieverbetering).
             - rest_days_last_7 en longest_current_rest_streak_days: rustpatroon.
 
-            Geef antwoord als STRIKT JSON, geen andere tekst eromheen, in dit
-            formaat: {"summary": "één zin samenvatting", "risk_level": "low|medium|high", "recommendation": "concreet advies, max 2 zinnen"}
+            Geef antwoord als STRIKT JSON, geen andere tekst eromheen, geen
+            markdown-codeblok (geen ```), in dit formaat:
+            {"summary": "één zin samenvatting", "risk_level": "low|medium|high", "recommendation": "concreet advies, max 2 zinnen"}
             PROMPT;
     }
 
@@ -58,12 +59,29 @@ class CoachClient
     {
         $text = $payload['content'][0]['text'] ?? null;
 
-        $decoded = $text ? json_decode($text, true) : null;
+        $decoded = $text ? json_decode($this->stripCodeFence($text), true) : null;
 
         if (! is_array($decoded) || ! isset($decoded['summary'])) {
             throw new RuntimeException('Coach response was not valid JSON: '.($text ?? 'empty'));
         }
 
         return $decoded;
+    }
+
+    /**
+     * Claude sometimes wraps its JSON answer in a markdown code fence
+     * (```json ... ```) despite being told not to — strip that off before
+     * decoding, rather than relying purely on prompt instructions.
+     */
+    private function stripCodeFence(string $text): string
+    {
+        $text = trim($text);
+
+        if (str_starts_with($text, '```')) {
+            $text = preg_replace('/^```[a-zA-Z]*\n?/', '', $text);
+            $text = preg_replace('/```$/', '', $text);
+        }
+
+        return trim($text);
     }
 }
