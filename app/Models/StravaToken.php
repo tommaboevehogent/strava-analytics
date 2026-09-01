@@ -19,6 +19,8 @@ class StravaToken extends Model
         return [
             'expires_at' => 'datetime',
             'scope' => 'array',
+            'access_token' => 'encrypted',
+            'refresh_token' => 'encrypted',
         ];
     }
 

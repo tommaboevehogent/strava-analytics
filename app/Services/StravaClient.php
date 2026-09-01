@@ -108,13 +108,9 @@ class StravaClient
     {
         $token = $this->accessTokenFor($athleteId);
 
-        try {
-            $response = Http::withToken($token)
-                ->baseUrl(self::BASE_URL)
-                ->send($method, $path, ['query' => $query]);
-        } catch (RequestException $e) {
-            throw $e;
-        }
+        $response = Http::withToken($token)
+            ->baseUrl(self::BASE_URL)
+            ->send($method, $path, ['query' => $query]);
 
         $this->logRateLimitIfClose($response);
 
