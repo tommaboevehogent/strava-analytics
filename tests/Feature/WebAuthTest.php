@@ -1,0 +1,58 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+class WebAuthTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_login_page_is_accessible(): void
+    {
+        $this->get('/login')->assertOk();
+    }
+
+    public function test_user_can_login_with_correct_credentials(): void
+    {
+        $user = User::factory()->create(['password' => 'correct-password']);
+
+        $response = $this->post('/login', [
+            'email' => $user->email,
+            'password' => 'correct-password',
+        ]);
+
+        $response->assertRedirect(route('tokens.index'));
+        $this->assertAuthenticatedAs($user);
+    }
+
+    public function test_login_fails_with_wrong_password(): void
+    {
+        $user = User::factory()->create(['password' => 'correct-password']);
+
+        $response = $this->post('/login', [
+            'email' => $user->email,
+            'password' => 'wrong-password',
+        ]);
+
+        $response->assertSessionHasErrors('email');
+        $this->assertGuest();
+    }
+
+    public function test_guest_is_redirected_away_from_tokens_page(): void
+    {
+        $this->get('/tokens')->assertRedirect('/login');
+    }
+
+    public function test_logged_in_user_can_logout(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->post('/logout');
+
+        $response->assertRedirect('/');
+        $this->assertGuest();
+    }
+}
