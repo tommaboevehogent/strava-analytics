@@ -3,6 +3,7 @@
 @section('content')
     <nav class="topnav">
         @auth
+            <a href="{{ route('trainingen.index') }}">Trainingen</a>
             <a href="{{ route('tokens.index') }}">Mijn API-tokens</a>
         @else
             <a href="{{ route('login') }}">Log in</a>

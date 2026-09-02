@@ -88,6 +88,6 @@ class TrainingFeatures
     {
         $lastActivity = Activity::query()->latest('started_at')->first();
 
-        return $lastActivity ? (int) now()->diffInDays($lastActivity->started_at) : 0;
+        return $lastActivity ? (int) now()->diffInDays($lastActivity->started_at, true) : 0;
     }
 }

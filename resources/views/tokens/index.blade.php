@@ -4,6 +4,7 @@
 
 @section('content')
     <nav class="topnav">
+        <a href="{{ route('trainingen.index') }}">Trainingen</a>
         <span>Ingelogd als {{ auth()->user()->name }}</span>
         <form method="POST" action="{{ route('logout') }}" style="margin:0;">
             @csrf

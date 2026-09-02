@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ApiTokenController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\StravaAuthController;
 use App\Http\Controllers\StravaWebhookController;
 use Illuminate\Support\Facades\Route;
@@ -24,6 +25,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/tokens', [ApiTokenController::class, 'index'])->name('tokens.index');
     Route::post('/tokens', [ApiTokenController::class, 'store'])->name('tokens.store');
     Route::delete('/tokens/{tokenId}', [ApiTokenController::class, 'destroy'])->name('tokens.destroy');
+
+    Route::get('/trainingen', [DashboardController::class, 'index'])->name('trainingen.index');
+    Route::get('/trainingen/{activity}', [DashboardController::class, 'show'])->name('trainingen.show');
 });
 
 // --- Strava OAuth (one-time authorization, run this yourself as the app owner) ---
