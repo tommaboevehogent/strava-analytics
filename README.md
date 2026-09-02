@@ -4,8 +4,6 @@ A personal Laravel REST API on top of my own Strava training data — OAuth2, we
 
 Started this project to learn more about PHP/Laravel.
 
-**Live:** `https://strava-analytics-production-i0zvv7.laravel.cloud` (Laravel Cloud)
-
 <img width="912" height="897" alt="image" src="https://github.com/user-attachments/assets/19812fd8-468e-457e-a24a-2c69f7bd4da1" />
 
 
